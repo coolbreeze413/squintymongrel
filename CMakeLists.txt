@@ -29,6 +29,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets WebEngineWidgets 
 
 # download the monaco editor tgz, extract it, and rename the dir from 'package' to 'monaco-editor'
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/resources/monaco-editor-0.30.0.tgz)
+message("Downloading monaco-editor tgz package...")
 file(DOWNLOAD
     https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.30.0.tgz
     ${CMAKE_SOURCE_DIR}/resources/monaco-editor-0.30.0.tgz
@@ -36,6 +37,7 @@ file(DOWNLOAD
 endif()
 
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/resources/monaco-editor/)
+message("Extracting monaco-editor tgz package...")
 execute_process(
     COMMAND_ECHO
         STDOUT
