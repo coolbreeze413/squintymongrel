@@ -66,13 +66,6 @@ CURRENT_BRANCH := $(shell git symbolic-ref HEAD --short 2>/dev/null || echo "no_
 $(info CURRENT_BRANCH=$(CURRENT_BRANCH))
 
 
-DEPLOY_PACKAGE_DIR_PATH := $(CMAKE_SOURCE_DIR)/deploy
-LINUXDEPLOYQT_APPIMAGE_FILE_PATH := $(CMAKE_BUILD_DIR)/linuxdeployqt-continuous-x86_64.AppImage
-MAKESELF_2_3_1_FILE_PATH := $(CMAKE_BUILD_DIR)/makeself-2.3.1/makeself.sh
-# win32 style paths, convert using cygpath:
-DEPLOY_PACKAGE_DIR_PATH_W=$(shell cygpath -w "$(DEPLOY_PACKAGE_DIR_PATH)" | sed 's/\\/\\\\/g')
-
-
 .DEFAULT_GOAL := all
 
 .PHONY: all
@@ -118,50 +111,6 @@ update:
 	git fetch --tags
 	git fetch
 	git submodule update --init --recursive
-
-# https://github.com/AppImage/AppImageKit/wiki/AppDir
-.PHONY: deploy
-deploy: install
-ifeq ($(CURRENT_BUILD_PLATFORM),WIN32_MINGW64)
-
-	$(error deploy on $(CURRENT_BUILD_PLATFORM) is not supported yet!)
-
-else ifeq ($(CURRENT_BUILD_PLATFORM),LINUX)
-
-# create a fresh 'deploy' package dir
-	@rm -rf $(DEPLOY_PACKAGE_DIR_PATH)
-	@mkdir -p $(DEPLOY_PACKAGE_DIR_PATH)
-# copy the build into the deploy package dir, use a filter as needed, to put stuff into the deploy package
-	@cd $(PREFIX) && find . | grep -f $(CMAKE_SOURCE_DIR)/deployment_filter.txt | xargs -d '\n' cp -r --parents -t $(DEPLOY_PACKAGE_DIR_PATH)/usr
-# copy docs into 'AppDir'/usr/docs
-
-# create 'AppImage' using linuxdeployqt
-	@echo "creating deployment package using linuxdeployqt..."
-ifeq ("$(wildcard $(LINUXDEPLOYQT_APPIMAGE_FILE_PATH))","")
-	@wget -q -O $(LINUXDEPLOYQT_APPIMAGE_FILE_PATH) https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-	@chmod +x $(LINUXDEPLOYQT_APPIMAGE_FILE_PATH)
-endif # if LINUXDEPLOYQT_APPIMAGE_FILE_PATH does not exist
-	cd $(DEPLOY_PACKAGE_DIR_PATH) && $(LINUXDEPLOYQT_APPIMAGE_FILE_PATH) $(DEPLOY_PACKAGE_DIR_PATH)/usr/share/applications/squintymongrel.desktop -appimage -no-translations &> $(CMAKE_SOURCE_DIR)/linuxdeployqt.log || true
-
-# remove the artifacts from linuxdeployqt
-#@rm -rf $(DEPLOY_PACKAGE_DIR_PATH)/*.AppImage
-	@rm -rf $(DEPLOY_PACKAGE_DIR_PATH)/AppRun
-	@rm -rf $(DEPLOY_PACKAGE_DIR_PATH)/squintymongrel.desktop
-	@rm -rf $(DEPLOY_PACKAGE_DIR_PATH)/squintymongrel.png
-	@rm -rf $(DEPLOY_PACKAGE_DIR_PATH)/.DirIcon
-# rename the 'AppDir'/usr into the application name and this is our 'portable' deploy package
-	@mv $(DEPLOY_PACKAGE_DIR_PATH)/usr $(DEPLOY_PACKAGE_DIR_PATH)/squintymongrel_$(VERSION)
-
-# create a Makeself self-extracting archive
-	@echo "creating self-extracting archive using makeself..."
-ifeq ("$(wildcard $(MAKESELF_2_3_1_FILE_PATH))","")
-	@cd $(CMAKE_BUILD_DIR) && wget -q https://github.com/megastep/makeself/releases/download/release-2.3.1/makeself-2.3.1.run
-	@cd $(CMAKE_BUILD_DIR) && chmod +x makeself-2.3.1.run
-	@cd $(CMAKE_BUILD_DIR) && ./makeself-2.3.1.run -q --nox11 1>/dev/null
-endif # if MAKESELF_2_3_1_FILE_PATH does not exist
-	@$(MAKESELF_2_3_1_FILE_PATH) --notemp --nox11 --gzip "$(DEPLOY_PACKAGE_DIR_PATH)/squintymongrel_$(VERSION)" "$(DEPLOY_PACKAGE_DIR_PATH)/squintymongrel_$(VERSION).gz.run" "squintymongrel Installer" echo "squintymongrel Installation Done!" &> $(CMAKE_SOURCE_DIR)/makeself.log
-
-endif # CURRENT_BUILD_PLATFORM
 
 
 .PHONY: prune

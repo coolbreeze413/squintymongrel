@@ -17,10 +17,6 @@ cd squintymongrel
 make
 ```
 
-### Deploy
-```bash
-make deploy
-```
 
 ### Run
 ```bash

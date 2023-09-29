@@ -18,15 +18,6 @@ int main(int argc, char *argv[])
     // Qt5 only: Make QIcon::pixmap() generate high-dpi pixmaps that can be larger than the requested size.
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-    char ARG_DISABLE_WEB_SECURITY[] = "--disable-web-security";
-    int newArgc = argc+1+1;
-    char** newArgv = new char*[newArgc];
-    for(int i=0; i<argc; i++) {
-        newArgv[i] = argv[i];
-    }
-    newArgv[argc] = ARG_DISABLE_WEB_SECURITY;
-    newArgv[argc+1] = nullptr;
-
     QApplication app(argc, argv);
 
 #ifndef QT_NO_SYSTEMTRAYICON
