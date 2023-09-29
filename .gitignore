@@ -1,0 +1,7 @@
+/build
+/install
+/deploy
+/.vscode
+*.log
+**/monaco-editor-*.tgz
+resources/monaco-editor/

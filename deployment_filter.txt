@@ -1,0 +1,22 @@
+########################################################
+# 'deployment' include filter list
+########################################################
+# this file contains the files/directories using (bash)regex, to be copied from the 
+#   'install/' (PREFIX) into the 'deploy/' (DEPLOYMENT) directory
+#
+# rules:
+# - the path should always begin with '^\./' and relative to the 'install/' directory.
+# - paths should always be (bash) regex patterns, so remember to escape regex special characters if needed
+# - there should be **no** empty lines in this file
+# - if the path is a directory, it will be copied recursively to the deployment directory
+########################################################
+^\./bin/squintymongrel$
+^\./scripts$
+^\./share/squintymongrel$
+^\./share/applications$
+^\./share/icons$
+^\./docs/*
+^\./versions\.txt$
+^\./squintymongrel\.desktop$
+^\./squintymongrel\.png$
+# end-of-file : do not add further empty lines!

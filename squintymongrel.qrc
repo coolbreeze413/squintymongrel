@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="images">
+   <!-- Dog by Cristiano Zoucas from: https://thenounproject.com/browse/icons/term/dog/ (CC BY 3.0) -->
+   <file alias="logo.svg">resources/images/squintymongrel.svg</file>
+</qresource>
+</RCC>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <link rel="stylesheet" data-name="vs/editor/editor.main"
+    href="./monaco-editor/dev/vs/editor/editor.main.css" />
+</head>
+
+<body>
+  <h2>Monaco Editor File Select</h2>
+
+  <input type='file' onchange='openFile(event)'>
+
+  <br/>
+
+  <div id='output'></div>
+
+  <br/>
+
+  <div id='language_detected'></div>
+
+  <br/>
+
+  <div id="container" style="min-width: 800px; min-height: 600px; border: 1px solid grey"></div>
+
+  <script>
+    var require = { paths: { vs: './monaco-editor/dev/vs' } };
+  </script>
+  <script src="./monaco-editor/dev/vs/loader.js"></script>
+  <script src="./monaco-editor/dev/vs/editor/editor.main.nls.js"></script>
+  <script src="./monaco-editor/dev/vs/editor/editor.main.js"></script>
+
+  <script>
+    // var editor = monaco.editor.create(document.getElementById('container'), {
+    //   value: [
+    //     '#include <iostream>',
+    //     '',
+    //     'int main() {',
+    //     'std::cout << "hello" << std::endl;',
+    //     'return 0;',
+    //     '}'
+    //   ].join('\n'),
+    //   language: 'cpp'
+    // });
+  </script>
+
+  <script>
+    // load default content on startup.
+    var monacoEditor = monaco.editor.create(document.getElementById('container'), {
+      value: [
+        '#include <iostream>',
+        '',
+        'int main() {',
+        'std::cout << "hello" << std::endl;',
+        'return 0;',
+        '}'
+      ].join('\n'),
+      language: 'cpp',
+      automaticLayout: true,
+      theme: "vs"
+    });
+
+    var node = document.getElementById('language_detected');
+    language_detected.innerText = 'language detected: ' + 'cpp';
+
+
+    var getModelLanguage = function(path) {
+      // include the dot in the extension!
+      var ext = path.substring(path.lastIndexOf('.'));
+      console.log("found extension: " + ext);
+      
+      const language = monaco
+        .languages
+        .getLanguages()
+        .find((lang) => {
+          // check the condition that will yield truthy
+          if( (lang.extensions) && (lang.extensions.indexOf(ext) != -1) ) {
+            return true;
+          }
+        });
+      
+      // console.log("found language:");
+      // console.log(language);
+      
+      return language ? language.id : 'plaintext';
+    }
+
+
+    var openFile = function(event) {
+    var input = event.target;
+    var filename = input.files[0].name;
+    var language_id = getModelLanguage(input.files[0].name)
+
+    var reader = new FileReader();
+    reader.onload = function() {
+      var text = reader.result;
+      // var node = document.getElementById('output');
+      // node.innerText = text;
+      // console.log(reader.result.substring(0, 200));
+      var node = document.getElementById('language_detected');
+      language_detected.innerText = 'language detected: ' + language_id;
+      monaco.editor.getModels().forEach(model => model.dispose());
+      var model = monaco.editor.createModel(value=text, language=language_id);
+      monacoEditor.setModel(model);
+    };
+    reader.readAsText(input.files[0]);
+  };
+  </script>
+</body>
+
+</html>
