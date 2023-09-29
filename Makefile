@@ -51,7 +51,7 @@ CURRENT_TIME := $(shell date +"%H_%M_%S")
 # only get upto vX.Y.Z-prerelease, ignore any .* after it.
 # to get the latest tag of the semantic versioning: https://stackoverflow.com/a/64438619
 # remember to have no 'spaces' after that last paranthesis below, in $(shell ...)<--HERE
-VERSION := $(shell git tag -l | grep -o "^v.*\..*\..*-[a-z]*" | sort -V | tail -1 | sed -e 's/[[:space:]]*$$//g')
+VERSION := $(shell git tag -l | grep -o "^v.*\..*\..*" | sort -V | tail -1 | sed -e 's/[[:space:]]*$$//g')
 ifeq ($(VERSION),)
 VERSION := v0.0.0-alpha
 endif
