@@ -5,8 +5,23 @@
 #include <QSplashScreen>
 #include <QTimer>
 #include <QColor>
+#include <QWebEngineUrlScheme>
+#include <QWebEngineUrlSchemeHandler>
+#include <QWebEngineProfile>
 #include "squintymongrel_config.h"
 #include "window.h"
+
+
+// https://doc.qt.io/qt-5/qwebengineurlschemehandler.html
+class MySchemeHandler : public QWebEngineUrlSchemeHandler
+{
+public:
+    MySchemeHandler(QObject *parent = nullptr) {
+    }
+    void requestStarted(QWebEngineUrlRequestJob *request) {
+    }
+};
+
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +33,26 @@ int main(int argc, char *argv[])
     // Qt5 only: Make QIcon::pixmap() generate high-dpi pixmaps that can be larger than the requested size.
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
+
+    // https://stackoverflow.com/questions/64892161/qtwebengine-fetch-api-fails-with-custom-scheme ( Qt 6.6 though :-( )
+    QWebEngineUrlScheme scheme("myscheme");
+    scheme.setFlags(
+        QWebEngineUrlScheme::SecureScheme |
+        QWebEngineUrlScheme::LocalScheme |
+        QWebEngineUrlScheme::LocalAccessAllowed |
+        QWebEngineUrlScheme::ServiceWorkersAllowed |
+        QWebEngineUrlScheme::ContentSecurityPolicyIgnored
+        // QWebEngineUrlScheme::CorsEnabled - not available in Qt 5.12
+    );
+    QWebEngineUrlScheme::registerScheme(scheme);
+
+
     QApplication app(argc, argv);
+
+
+    MySchemeHandler *handler = new MySchemeHandler();
+    QWebEngineProfile::defaultProfile()->installUrlSchemeHandler("myscheme", handler);
+
 
 #ifndef QT_NO_SYSTEMTRAYICON
     if (!QSystemTrayIcon::isSystemTrayAvailable()) {
