@@ -23,9 +23,9 @@ $(info CURRENT_DATE=$(CURRENT_DATE))
 $(info CURRENT_TIME=$(CURRENT_TIME))
 
 
-VERSION := $(shell git describe --abbrev=0)
+VERSION := $(shell git describe --tags --abbrev=0)
 ifeq ($(VERSION),)
-VERSION := v0.0.0-alpha
+VERSION := v0.0.0
 endif
 $(info VERSION=$(VERSION))
 
@@ -66,15 +66,25 @@ run-cmake:
 
 .PHONY: clean
 clean:
+ifeq ("$(wildcard $(CMAKE_BUILD_DIR))","")
+	$(info nothing to clean, CMake build directory does not exist!)
+else
 	$(MAKE) -C build clean
+endif
+
 
 .PHONY: distclean
 distclean:
+ifeq ("$(wildcard $(CMAKE_BUILD_DIR))","")
+	$(info nothing to clean, CMake build directory does not exist!)
+else
 	$(MAKE) -C build clean
-	rm -rf $(CMAKE_BUILD_DIR)
-	rm -rf $(CMAKE_SOURCE_DIR)/resources/monaco-editor/
-	rm -rf $(CMAKE_SOURCE_DIR)/resources/monaco-editor-*.tgz
-	rm -rf $(PREFIX)
+endif
+	@rm -rf $(CMAKE_BUILD_DIR)
+	@rm -rf $(CMAKE_SOURCE_DIR)/resources/monaco-editor/
+	@rm -rf $(CMAKE_SOURCE_DIR)/resources/monaco-editor-*.tgz
+	@rm -rf $(PREFIX)
+
 
 # phony target to enable repo update
 .PHONY: update

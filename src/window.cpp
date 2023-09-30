@@ -131,11 +131,11 @@ void Window::closeEvent(QCloseEvent *event)
     // basically, did the user click the close button?
     if (event->spontaneous())
     {
-        qDebug() << "closeEvent() -> spontaneous()";
+        // qDebug() << "closeEvent() -> spontaneous()";
     }
     else
     {
-        qDebug() << "closeEvent() -> *NOT* spontaneous()";
+        // qDebug() << "closeEvent() -> *NOT* spontaneous()";
     }
     QMainWindow::closeEvent(event);
 }

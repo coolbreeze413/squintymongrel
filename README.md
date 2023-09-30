@@ -27,5 +27,5 @@ make
 
 The awesome `squintymongrel` image used in the application is:  
 Dog by Cristiano Zoucas  
-https://thenounproject.com/browse/icons/term/dog/  
+https://thenounproject.com/icon/dog-151542/  
 CC BY 3.0  
