@@ -35,6 +35,9 @@ int main(int argc, char *argv[])
 
 
     // https://stackoverflow.com/questions/64892161/qtwebengine-fetch-api-fails-with-custom-scheme ( Qt 6.6 though :-( )
+    // https://doc.qt.io/qt-5/qtwebengine-debugging.html
+    // sudo apt-get install qtwebengine5-dev
+    // https://doc.qt.io/qt-6/qtwebenginewidgets-module.html
     QWebEngineUrlScheme scheme("myscheme");
     scheme.setFlags(
         QWebEngineUrlScheme::SecureScheme |
