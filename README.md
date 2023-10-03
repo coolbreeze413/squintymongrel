@@ -10,6 +10,10 @@ ADD MORE!
 
 ## Usage
 
+### Platforms
+
+Tested on Ubuntu 20.04 with the default `apt` provided `Qt 5.12.8` installation.
+
 ### Build
 ```bash
 git clone https://github.com/coolbreeze413/squintymongrel.git

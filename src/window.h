@@ -18,9 +18,10 @@ class QMenu;
 class QPushButton;
 class QSpinBox;
 class QTextEdit;
-class QWebEngineView;
 class QTreeView;
 QT_END_NAMESPACE
+
+class MonacoTextEditor;
 
 class Window : public QMainWindow
 {
@@ -44,7 +45,7 @@ private slots:
 #endif
 
 private:
-    void createWebEngineView();
+    void createTextEditor();
     void createFileExplorerView();
     void createActions();
 #ifndef QT_NO_SYSTEMTRAYICON
@@ -56,8 +57,8 @@ private:
     QAction *restoreAction;
     QAction *quitAction;
 
-    QWebEngineView* webEngineView;
     QTreeView* fileExplorerView;
+    MonacoTextEditor* textEditor;
 
 #ifndef QT_NO_SYSTEMTRAYICON
     QSystemTrayIcon *trayIcon;

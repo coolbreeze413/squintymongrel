@@ -23,8 +23,10 @@ message("SQUINTYMONGREL_GIT_HASH: ${SQUINTYMONGREL_GIT_HASH}")
 project(squintymongrel LANGUAGES CXX)
 
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets WebEngineWidgets REQUIRED)
+# find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
+set(QT_VERSION_MAJOR 5)
+set(Qt_DIR "/usr/lib/x86_64-linux-gnu/cmake/Qt")
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets WebEngineWidgets WebChannel REQUIRED)
 
 
 # download the monaco editor tgz, extract it, and rename the dir from 'package' to 'monaco-editor'
@@ -78,6 +80,10 @@ set(SOURCE_FILES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
     ${PROJECT_SOURCE_DIR}/src/window.cpp
     ${PROJECT_SOURCE_DIR}/src/window.h
+    ${PROJECT_SOURCE_DIR}/src/monaco_text_editor.cpp
+    ${PROJECT_SOURCE_DIR}/src/monaco_text_editor.h
+    ${PROJECT_SOURCE_DIR}/src/cpp_endpoint.h
+    ${PROJECT_SOURCE_DIR}/src/cpp_endpoint.cpp
 )
 
 set(QRC_FILES
@@ -105,6 +111,7 @@ target_link_libraries(squintymongrel PUBLIC
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::WebEngineWidgets
+    Qt${QT_VERSION_MAJOR}::WebChannel
 )
 
 # compile time definitions for target
@@ -158,7 +165,8 @@ install(
 
 install(
     FILES
-        resources/monaco_example.html
+        resources/monaco-editor.html
+        resources/qwebchannel.js
     DESTINATION
         share/squintymongrel/
     PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ

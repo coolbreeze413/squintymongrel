@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 #include "window.h"
+#include "monaco_text_editor.h"
 
 #include <QApplication>
 #include <QDesktopWidget>
@@ -29,14 +30,18 @@
 #include <QTreeView>
 #include <QFileSystemModel>
 #include <QSplitter>
+#include <QWebChannel>
+#include <QWebEngineSettings>
+#include <QWebEngineScript>
 
 #include <iostream>
 #include <regex>
 #include <fstream>
 
+
 Window::Window()
 {
-    createWebEngineView();
+    createTextEditor();
     createFileExplorerView();
     createActions();
 
@@ -56,7 +61,7 @@ Window::Window()
     QSplitter* splitter = new QSplitter();
     splitter->addWidget(fileExplorerView);
     splitter->setStretchFactor(0, 1);
-    splitter->addWidget(webEngineView);
+    splitter->addWidget(textEditor);
     splitter->setStretchFactor(1, 10);
     centraWidgetLayout->addWidget(splitter);
 
@@ -71,6 +76,7 @@ Window::Window()
     // finally adjust ourself to position centered and an appropriate size
     setPositionAndSize();
 }
+
 
 void Window::setVisible(bool visible)
 {
@@ -193,13 +199,11 @@ void Window::createTrayIcon()
 #endif // #ifndef QT_NO_SYSTEMTRAYICON
 
 
-void Window::createWebEngineView() {
+void Window::createTextEditor() {
 
-    std::cout << QCoreApplication::applicationDirPath().toStdString() << std::endl;
-
-    webEngineView = new QWebEngineView(this);
-    webEngineView->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/../share/squintymongrel/monaco_example.html"));
+    textEditor = new MonacoTextEditor(this);
 }
+
 
 void Window::createFileExplorerView() {
 
