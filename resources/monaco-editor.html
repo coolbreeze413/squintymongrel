@@ -83,7 +83,7 @@
     language_detected.innerText = 'language detected: ' + 'cpp';
 
 
-    var getModelLanguage = function(path) {
+    function getModelLanguage(path) {
       // include the dot in the extension!
       var ext = path.substring(path.lastIndexOf('.'));
       console.log("found extension: " + ext);
@@ -104,26 +104,50 @@
       return language ? language.id : 'plaintext';
     }
 
-    var openFile = function(event) {
-      var input = event.target;
-      var filename = input.files[0].name;
-      var language_id = getModelLanguage(input.files[0].name)
+    function openFile(event) {
+        var _input = event.target;
+        var _filepath = _input.files[0];
+        openFilePath(_filepath);
+    };
 
-      var reader = new FileReader();
-      reader.onload = function() {
-        var text = reader.result;
-        // var node = document.getElementById('output');
-        // node.innerText = text;
-        // console.log(reader.result.substring(0, 200));
-        var node = document.getElementById('language_detected');
-        language_detected.innerText = 'language detected: ' + language_id;
-        monaco.editor.getModels().forEach(model => model.dispose());
-        var model = monaco.editor.createModel(value=text, language=language_id);
-        monacoEditor.setModel(model);
-      };
-    
-      reader.readAsText(input.files[0]);
-  };
+    function openFilePath(filepath) {
+      window.cppEndPoint.log("openFilePath got filepath: " + filepath);
+      var language_id = getModelLanguage(filepath.name)
+
+        var reader = new FileReader();
+        reader.onload = function() {
+          var text = reader.result;
+          // var node = document.getElementById('output');
+          // node.innerText = text;
+          // console.log(reader.result.substring(0, 200));
+          var node = document.getElementById('language_detected');
+          language_detected.innerText = 'language detected: ' + language_id;
+          monaco.editor.getModels().forEach(model => model.dispose());
+          var model = monaco.editor.createModel(value=text, language=language_id);
+          monacoEditor.setModel(model);
+        };
+      
+        reader.readAsText(filepath);
+    };
+
+    function readTextFile(filepath) {
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", filepath, false);
+      rawFile.onreadystatechange = function () {
+        if(rawFile.readyState === 4)  {
+          if(rawFile.status === 200 || rawFile.status == 0) {
+            var text = rawFile.responseText;
+            var language_id = getModelLanguage(filepath)
+            var node = document.getElementById('language_detected');
+            language_detected.innerText = 'language detected: ' + language_id;
+            monaco.editor.getModels().forEach(model => model.dispose());
+            var model = monaco.editor.createModel(value=text, language=language_id);
+            monacoEditor.setModel(model);
+          }
+        }
+      }
+      rawFile.send(null);
+    }
   </script>
 
   <!-- <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script> -->
@@ -138,6 +162,12 @@
 
       // alert("we got intValue: " + window.cppEndPoint.intValue);
       window.cppEndPoint.log("we got intValue: " + window.cppEndPoint.intValue);
+
+      // window.cppEndPoint.updateFilePath.connect(readTextFile(arguments[0]));
+      window.cppEndPoint.updateFilePath.connect(function(path) {
+        alert(path);
+        readTextFile(path);
+      })
     });
   </script>
 

@@ -18,6 +18,8 @@ Q_INVOKABLE QVariant CPPEndPoint::getAppVersion()
   qDebug() << "getAppVersion()";
   
   QString appVersion = "v0.0.0";
+  // emit updateFilePath(QCoreApplication::applicationDirPath() +
+  //                                                 "/../share/squintymongrel/monaco-editor.html");
 
   return appVersion;
 }

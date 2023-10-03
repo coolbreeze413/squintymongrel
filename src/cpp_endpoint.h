@@ -27,6 +27,7 @@ public:
 
 signals:
     void intValueChanged(int);
+    void updateFilePath(const QString filepath);
 
 
 private:
