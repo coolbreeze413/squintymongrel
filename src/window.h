@@ -19,6 +19,7 @@ class QPushButton;
 class QSpinBox;
 class QTextEdit;
 class QTreeView;
+class QFileSystemModel;
 QT_END_NAMESPACE
 
 class MonacoTextEditor;
@@ -43,6 +44,8 @@ private slots:
     void showMessage();
     void messageClicked();
 #endif
+    void onFileExplorerDoubleClicked(const QModelIndex& modelIndex);
+
 
 private:
     void createTextEditor();
@@ -57,7 +60,9 @@ private:
     QAction *restoreAction;
     QAction *quitAction;
 
+    QFileSystemModel *model;
     QTreeView* fileExplorerView;
+    
     MonacoTextEditor* textEditor;
 
 #ifndef QT_NO_SYSTEMTRAYICON

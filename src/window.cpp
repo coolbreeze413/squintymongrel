@@ -207,7 +207,8 @@ void Window::createTextEditor() {
 
 void Window::createFileExplorerView() {
 
-    QFileSystemModel *model = new QFileSystemModel();
+    model = new QFileSystemModel();
+    
     fileExplorerView = new QTreeView();
     fileExplorerView->setModel(model);
     fileExplorerView->setAnimated(false);
@@ -217,8 +218,20 @@ void Window::createFileExplorerView() {
     fileExplorerView->hideColumn(2);
     fileExplorerView->hideColumn(3);
     fileExplorerView->setWindowTitle(QObject::tr("Dir View"));
+    
     QModelIndex index = model->setRootPath(QCoreApplication::applicationDirPath());
     fileExplorerView->setCurrentIndex(index);
+
+    QObject::connect(fileExplorerView, &QTreeView::doubleClicked, this, &Window::onFileExplorerDoubleClicked);
+}
+
+void Window::onFileExplorerDoubleClicked(const QModelIndex& modelIndex) {
+    
+    QString filepath = model->filePath(modelIndex);
+    
+    qDebug() << "double-clicked on: " << filepath;
+    
+    textEditor->openFileInCurrentTab(filepath);
 }
 
 

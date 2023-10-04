@@ -23,9 +23,11 @@ message("SQUINTYMONGREL_GIT_HASH: ${SQUINTYMONGREL_GIT_HASH}")
 project(squintymongrel LANGUAGES CXX)
 
 
-# find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
-set(QT_VERSION_MAJOR 5)
-set(Qt_DIR "/usr/lib/x86_64-linux-gnu/cmake/Qt")
+# for manual configuration, use the below instead of 'find_package(QT NAMES Qt5 COMPONENTS Core REQUIRED)'
+# set(QT_VERSION_MAJOR 5)
+# set(Qt_DIR "/usr/lib/x86_64-linux-gnu/cmake/Qt")
+# this first one will populate the ${QT_VERSION_MAJOR} variable that can be used next.
+find_package(QT NAMES Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets WebEngineWidgets WebChannel REQUIRED)
 
 

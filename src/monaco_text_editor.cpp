@@ -113,8 +113,9 @@ MonacoTextEditor::MonacoTextEditor(QWidget* parent) :
       // )DELIM");
       // this->webEngineView->page()->runJavaScript(code3);
 
-      emit CPPEndPointObject->updateFilePath(QCoreApplication::applicationDirPath() +
-                                       "/../share/squintymongrel/monaco-editor.html");
+
+      // emit CPPEndPointObject->updateFilePath(QCoreApplication::applicationDirPath() +
+      //                                  "/../share/squintymongrel/monaco-editor.html");
     }
   );
 
@@ -124,5 +125,11 @@ MonacoTextEditor::MonacoTextEditor(QWidget* parent) :
 
 
 MonacoTextEditor::~MonacoTextEditor() {
+
+}
+
+void MonacoTextEditor::openFileInCurrentTab(QString filepath) {
+
+  emit CPPEndPointObject->updateFilePath(filepath);
 
 }

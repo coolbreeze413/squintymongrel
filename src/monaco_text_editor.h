@@ -19,6 +19,8 @@ public:
     MonacoTextEditor(QWidget* parent=nullptr);
     ~MonacoTextEditor();
 
+    void openFileInCurrentTab(QString filepath);
+
 
 private:
     QVBoxLayout* monacoTextEditorVBoxLayout;
