@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
+#include <QtGlobal>
+#include <QDebug>
 #include <QApplication>
 #include <QMessageBox>
 #include <QSplashScreen>
@@ -10,6 +12,20 @@
 #include <QWebEngineProfile>
 #include "squintymongrel_config.h"
 #include "window.h"
+
+
+// https://stackoverflow.com/questions/240353/convert-a-preprocessor-token-to-a-string
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+
+// example usage for checking version for includes
+// remember to #include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QtGui>
+#endif
 
 
 // https://doc.qt.io/qt-5/qwebengineurlschemehandler.html
@@ -27,6 +43,20 @@ int main(int argc, char *argv[])
 {
     // initialize the Qt resource system ('squintymongrel.qrc')
     Q_INIT_RESOURCE(squintymongrel);
+
+
+    // https://stackoverflow.com/questions/52256264/qt-version-incorrect
+    qDebug() << "";
+    qDebug() << "Application Version           :" << "SquintyMongrel" << TOSTRING(SQUINTYMONGREL_VERSION);
+    qDebug() << "Git SHA1                      :" << TOSTRING(SQUINTYMONGREL_GIT_HASH);
+    qDebug() << "built with Qt Version (string):" << QT_VERSION_STR;
+    qDebug() << "built with Qt Version (hex)   :"
+             << (((QT_VERSION) >> 16) & 0xff)
+             << (((QT_VERSION) >> 8) & 0xff)
+             << ((QT_VERSION) & 0xff);
+    qDebug() << "runtime Qt Version (string)   :" << qVersion();
+    qDebug() << "";
+
 
     // https://doc.qt.io/qt-5/highdpi.html
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

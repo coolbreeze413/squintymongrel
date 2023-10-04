@@ -115,7 +115,7 @@
     function readFileFromInputUsingFileReader(event) {
       var _input = event.target;
       var _filepath = _input.files[0];
-      window.cppEndPoint.log("openFileFromInput: " + _filepath);
+      window.cppEndPoint.log("openFileFromInput: " + _filepath.name);
       
       var language_id = getModelLanguage(_filepath.name)
 
@@ -136,6 +136,7 @@
 
     // https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file-in-the-browser
     function readFileFromPathUsingXHR(filepath) {
+      window.cppEndPoint.log("readFileFromPathUsingXHR: " + filepath);
       var rawFile = new XMLHttpRequest();
       rawFile.open("GET", filepath, false);
       rawFile.onreadystatechange = function () {
@@ -160,6 +161,7 @@
 
     // https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file-in-the-browser
     function readFileFromPathUsingFetch(filepath) {
+      window.cppEndPoint.log("readFileFromPathUsingFetch: " + filepath);
       fetch(filepath)
       .then((res) => res.text())
       .then((text) => {
