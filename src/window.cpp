@@ -4,7 +4,8 @@
 #include "monaco_text_editor.h"
 
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
 #include <QMainWindow>
 #include <QWindow>
 #include <QAction>
@@ -90,17 +91,16 @@ void Window::setVisible(bool visible)
 void Window::setPositionAndSize()
 {
     // aesthetic: setup the MainWindow to be two-third the area of the screen where it is displayed, centered.
-    QDesktopWidget dw;
-    
+
     // support multiple screens correctly.
     // NOTE: show() required before windowHandle() is valid!
     show();
-    
+
     // set the screen to be displayed according to the mouse cursor position right now
     windowHandle()->setScreen(QGuiApplication::screenAt(QCursor::pos()));
-    
+
     // set the geometry so that we are approximately 2/3 of the screen size
-    QRect desk_rect = dw.screenGeometry(dw.screenNumber(QCursor::pos()));
+    QRect desk_rect = QGuiApplication::screenAt(QCursor::pos())->geometry();
     setGeometry(desk_rect.width() / 6, desk_rect.height() / 6, desk_rect.width() * 2 / 3,
                 desk_rect.height() * 2 / 3);
     

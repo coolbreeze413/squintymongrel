@@ -15,8 +15,12 @@
 
 
 // https://stackoverflow.com/questions/240353/convert-a-preprocessor-token-to-a-string
-#define STRINGIFY(x) #x
+// https://gcc.gnu.org/onlinedocs/gcc-13.2.0/cpp/Stringizing.html
+// if we have '#define foo abcd', then:
+// step 1: TOSTRING(foo)  fully macro-expanded -> TOSTRING(abcd) -> STRINGIFY(abcd)
 #define TOSTRING(x) STRINGIFY(x)
+// step 2: STRINGIFY(abcd) -> replaced by "abcd" and not macro expanded because it is stringized with '#'
+#define STRINGIFY(x) #x
 
 
 // example usage for checking version for includes
