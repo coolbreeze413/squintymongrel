@@ -49,10 +49,10 @@ find_package(Qt NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
 find_package(Qt${Qt_VERSION_MAJOR} COMPONENTS Core Gui Widgets WebEngineWidgets WebChannel REQUIRED)
 # package_VERSION
 message("Qt Version: " ${Qt_VERSION})
-# message("Qt6 Version: " ${Qt6_VERSION})
+# message("Qt${Qt_VERSION_MAJOR} Version: " ${Qt${Qt_VERSION_MAJOR}_VERSION})
 # packagecomponent_VERSION
-# message("Qt6Core Version: " ${Qt6Core_VERSION})
-# message("Qt6Widgets Version: " ${Qt6Widgets_VERSION})
+# message("Qt${Qt_VERSION_MAJOR}Core Version: " ${Qt${Qt_VERSION_MAJOR}Core_VERSION})
+# message("Qt${Qt_VERSION_MAJOR}Widgets Version: " ${Qt${Qt_VERSION_MAJOR}Widgets_VERSION})
 
 
 # https://itecnote.com/tecnote/qt-test-for-supported-qt-version-with-cmake/
