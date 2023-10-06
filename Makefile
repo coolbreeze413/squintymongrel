@@ -158,7 +158,14 @@ dummy:
 
 # examples:
 # make distclean
-# make -j$(nproc) 2>&1 | tee build_default.log
-# make -j$(nproc) QMAKE_PATH=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake 2>&1 | tee build_5_12_8.log
-# make -j$(nproc) QMAKE_PATH=/home/${USER}/qt/5.15.2/gcc_64/bin/qmake 2>&1 | tee build_5_15_2.log
-
+# build : make -j$(nproc) 2>&1 | tee build_default.log
+# run   : ./install/bin/squintymongrel
+#
+# build : make -j$(nproc) QMAKE_PATH=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake 2>&1 | tee build_5_12_8.log
+# run   : LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/qt5/lib:${LD_LIBRARY_PATH} ./install/bin/squintymongrel
+#
+# build : make -j$(nproc) QMAKE_PATH=/home/${USER}/qt/5.15.2/gcc_64/bin/qmake 2>&1 | tee build_5_15_2.log
+# run   : LD_LIBRARY_PATH=/home/${USER}/qt/5.15.2/gcc_64/lib:${LD_LIBRARY_PATH} ./install/bin/squintymongrel
+#
+# build : make -j$(nproc) QMAKE_PATH=/home/${USER}/qt/6.5.3/gcc_64/bin/qmake 2>&1 | tee build_6_5_3.log
+# run   : LD_LIBRARY_PATH=/home/${USER}/qt/6.5.3/gcc_64/lib:${LD_LIBRARY_PATH} ./install/bin/squintymongrel

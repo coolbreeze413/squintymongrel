@@ -13,8 +13,9 @@ ADD MORE!
 ### Platforms
 
 Tested on Ubuntu 20.04 with:
-- default `apt` provided `Qt 5.12.8`
-- Qt Installer provided `Qt 5.15.2` ( base install path used: `/home/${USER}/qt` ==>> so, `5.15.2` path: `/home/${USER}/qt/5.15.2` )
+- `Qt 5.12.8` installed using `apt` (default version for Ubuntu 20.04)
+- `Qt 5.15.2` installed using Qt Installer ( base install path used: `/home/${USER}/qt` ==>> so, `5.15.2` path: `/home/${USER}/qt/5.15.2` )
+- `Qt 6.5.3` installed using Qt Installer ( base install path used: `/home/${USER}/qt` ==>> so, `6.5.3` path: `/home/${USER}/qt/6.5.3` )
 
 In general, it is recommended to use a base path like: `/home/${USER}/qt` or `/opt/qt` for installation, so it becomes easy to use the same build commands across different machines.
 
@@ -59,6 +60,14 @@ If we want to use a separate non-distro-provided installation of Qt, using a Qt 
    make QMAKE_PATH=/home/${USER}/qt/5.15.2/gcc_64/bin/qmake
    ```
 
+   For example, if we have `Qt 6.5.3` installation at: `/home/${USER}/qt/6.5.3`  
+   Then, qmake path for gcc, x86_64 will be at: `/home/${USER}/qt/6.5.3/gcc_64/bin/qmake`  
+   and then we use:  
+   ```bash
+   make QMAKE_PATH=/home/${USER}/qt/6.5.3/gcc_64/bin/qmake
+   ```
+
+
 
 ### Run Local Install
 
@@ -82,6 +91,12 @@ and then we use:
 LD_LIBRARY_PATH=/home/${USER}/qt/5.15.2/gcc_64/lib:$LD_LIBRARY_PATH ./install/bin/squintymongrel
 ```
 
+For example, if we have `Qt 6.5.3` installation at: `/home/${USER}/qt/6.5.3`  
+Then, lib path for gcc, x86_64 will be at: `/home/${USER}/qt/6.5.3/gcc_64/lib`  
+and then we use:  
+```bash
+LD_LIBRARY_PATH=/home/${USER}/qt/6.5.3/gcc_64/lib:$LD_LIBRARY_PATH ./install/bin/squintymongrel
+```
 
 ## Attributions
 
