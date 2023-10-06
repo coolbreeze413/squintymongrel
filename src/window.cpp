@@ -230,8 +230,10 @@ void Window::onFileExplorerDoubleClicked(const QModelIndex& modelIndex) {
     QString filepath = model->filePath(modelIndex);
     
     qDebug() << "double-clicked on: " << filepath;
-    
-    textEditor->openFileInCurrentTab(filepath);
+
+    if(QFileInfo(filepath).isFile()) {
+        textEditor->openFileInCurrentTab(filepath);
+    }
 }
 
 

@@ -128,8 +128,18 @@ MonacoTextEditor::~MonacoTextEditor() {
 
 }
 
+
 void MonacoTextEditor::openFileInCurrentTab(QString filepath) {
 
   emit CPPEndPointObject->updateFilePath(filepath);
+
+}
+
+
+void MonacoTextEditor::runJavaScript(QString javascriptCode) {
+
+  if(webEngineView->page()) {
+    webEngineView->page()->runJavaScript(javascriptCode);
+  }
 
 }

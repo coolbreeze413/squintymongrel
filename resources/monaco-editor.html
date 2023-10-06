@@ -186,13 +186,30 @@
       window.cppEndPoint = channel.objects.CPPEndPoint;
       window.cppEndPoint.log("QWebChannel created!");
 
+      // read the 'intValue' exposed as a 'property' (this is an int)
       // alert("we got intValue: " + window.cppEndPoint.intValue);
       window.cppEndPoint.log("we got intValue: " + window.cppEndPoint.intValue);
 
+      // read the 'qtVersion' exposed as a 'property' (this is a list of ints)
+      //alert("we got qtVersion: " + window.cppEndPoint.qtVersion);
+      var qtVersion = window.cppEndPoint.qtVersion;
+      window.cppEndPoint.log("we got qtVersion: " + qtVersion[0] + "." + qtVersion[1] + "." + qtVersion[2]);
+
+      // connect the Qt side updateFilePath(QString filepath) signal to anon function, and handle it:
       window.cppEndPoint.updateFilePath.connect(function(path) {
         // alert(path);
-        readFileFromPathUsingXHR(path);
-        // readFileFromPathUsingFetch(path); // -> won't work as: Fetch API cannot load ... URL scheme "file" is not supported.
+
+        // FUTURE: use semver JS library (https://stackoverflow.com/a/30256597/3379867)
+        if(window.cppEndPoint.qtVersion[0] >= 6 &&
+           window.cppEndPoint.qtVersion[1] >= 5 &&
+           window.cppEndPoint.qtVersion[2] >= 3) {
+            // Qt 6.5.3 seems to be support FETCH API, so use that
+            readFileFromPathUsingFetch(path);
+           }
+        else {
+          // Older Qt versions refuse to allow FETCH API with a 'file:///' URL so use XMLHTTPRequest
+          readFileFromPathUsingXHR(path);
+        }
       })
     });
   </script>

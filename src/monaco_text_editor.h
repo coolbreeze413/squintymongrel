@@ -20,6 +20,7 @@ public:
     ~MonacoTextEditor();
 
     void openFileInCurrentTab(QString filepath);
+    void runJavaScript(QString javascriptCode);
 
 
 private:

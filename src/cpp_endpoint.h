@@ -13,7 +13,7 @@ class CPPEndPoint: public QObject
     Q_OBJECT
 
 public:
-    CPPEndPoint(QObject* parent=nullptr) {}
+    CPPEndPoint(QObject* parent=nullptr);
 
 
 public:
@@ -24,6 +24,10 @@ public:
     Q_PROPERTY(int intValue READ getIntValue NOTIFY intValueChanged);
     Q_INVOKABLE int getIntValue();
 
+    // expose 'qtVersion' as a property, which will invoke getQtVersion() to get the value
+    Q_PROPERTY(QVariant qtVersion READ getQtVersion CONSTANT);
+    Q_INVOKABLE QVariant getQtVersion();
+
 
 signals:
     void intValueChanged(int);
@@ -32,6 +36,7 @@ signals:
 
 private:
     int m_intValue = 413;
+    QList<int> m_qtVersion;
 };
 
 #endif // #ifndef CPP_ENDPOINT_H

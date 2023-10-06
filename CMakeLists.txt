@@ -45,14 +45,14 @@ project(squintymongrel LANGUAGES CXX)
 
 # note that find_package() populates the package_VERSION variable, as well as packagecomponent_VERSION variable.
 # this can be used for further checks as below.
-find_package(Qt NAMES Qt5 COMPONENTS Core REQUIRED)
-find_package(Qt5 COMPONENTS Core Gui Widgets WebEngineWidgets WebChannel REQUIRED)
+find_package(Qt NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${Qt_VERSION_MAJOR} COMPONENTS Core Gui Widgets WebEngineWidgets WebChannel REQUIRED)
 # package_VERSION
 message("Qt Version: " ${Qt_VERSION})
-# message("Qt5 Version: " ${Qt5_VERSION})
+# message("Qt6 Version: " ${Qt6_VERSION})
 # packagecomponent_VERSION
-# message("Qt5Core Version: " ${Qt5Core_VERSION})
-# message("Qt5Widgets Version: " ${Qt5Widgets_VERSION})
+# message("Qt6Core Version: " ${Qt6Core_VERSION})
+# message("Qt6Widgets Version: " ${Qt6Widgets_VERSION})
 
 
 # https://itecnote.com/tecnote/qt-test-for-supported-qt-version-with-cmake/

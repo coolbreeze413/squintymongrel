@@ -14,6 +14,16 @@
 #define STRINGIFY(x) #x
 
 
+CPPEndPoint::CPPEndPoint(QObject* parent) {
+  
+  // set the Qt Version property:
+  m_qtVersion.append(((QT_VERSION) >> 16) & 0xff);
+  m_qtVersion.append(((QT_VERSION) >> 8) & 0xff);
+  m_qtVersion.append((QT_VERSION) & 0xff);
+
+}
+
+
 Q_INVOKABLE void CPPEndPoint::log(QVariant s)
 {
   QString str = s.toString();
@@ -35,4 +45,12 @@ Q_INVOKABLE int CPPEndPoint::getIntValue()
 {
   qDebug() << "getIntValue()";
   return m_intValue;
+}
+
+
+Q_INVOKABLE QVariant CPPEndPoint::getQtVersion()
+{
+  QVariant variant = QVariant::fromValue(m_qtVersion);
+  qDebug() << "getQtVersion()";
+  return variant;
 }
