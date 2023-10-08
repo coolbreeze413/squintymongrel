@@ -41,6 +41,14 @@ Q_INVOKABLE QVariant CPPEndPoint::getAppVersion()
 }
 
 
+Q_INVOKABLE void CPPEndPoint::saveFileContent(QVariant fileContent)
+{
+  qDebug() << "saveFileContent() from JS, send to CPP";
+  
+  emit signalToCPP_SaveFileContentFromJS(fileContent);
+}
+
+
 Q_INVOKABLE int CPPEndPoint::getIntValue()
 {
   qDebug() << "getIntValue()";

@@ -29,6 +29,19 @@ private:
     QWebEngineView* webEngineView;
     QWebChannel* webEngineChannel;
     CPPEndPoint* CPPEndPointObject;
+
+    // actions
+    QAction* saveCurrentFileAction;
+
+    // data
+    QString currentFilePath;
+
+private slots:
+    void handleAction_SaveFile();
+
+public slots:
+    // handle signals from JS side
+    void handleSignalFromJS_SaveFileContent(QVariant fileContent);
 };
 
 #endif // #ifndef MONACOTEXTEDITOR_H

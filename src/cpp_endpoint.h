@@ -19,9 +19,10 @@ public:
 public:
     Q_INVOKABLE void log(QVariant s);
     Q_INVOKABLE QVariant getAppVersion();
+    Q_INVOKABLE void saveFileContent(QVariant fileContent);
     
     // expose 'intValue' as a property, which will invoke getIntValue() to get the value
-    Q_PROPERTY(int intValue READ getIntValue NOTIFY intValueChanged);
+    Q_PROPERTY(int intValue READ getIntValue NOTIFY signalToJS_IntValueChanged);
     Q_INVOKABLE int getIntValue();
 
     // expose 'qtVersion' as a property, which will invoke getQtVersion() to get the value
@@ -30,8 +31,14 @@ public:
 
 
 signals:
-    void intValueChanged(int);
-    void updateFilePath(const QString filepath);
+
+    // to Monaco Text Editor JS
+    void signalToJS_IntValueChanged(int);
+    void signalToJS_UpdateFilePath(const QString filepath);
+    void signalToJS_SaveFile();
+
+    // to Monaco Text Editor C++
+    void signalToCPP_SaveFileContentFromJS(QVariant fileContent);
 
 
 private:

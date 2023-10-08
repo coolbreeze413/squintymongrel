@@ -9,6 +9,12 @@
 #include <QWebChannel>
 #include <QWebEngineSettings>
 #include <QWebEngineScript>
+#include <QFile>
+#include <QAction>
+#if (QT_VERSION < QT_VERSION_CHECK(6, 5, 3))
+    #include <QTextCodec>
+#endif
+
 
 
 MonacoTextEditor::MonacoTextEditor(QWidget* parent) :
@@ -121,6 +127,23 @@ MonacoTextEditor::MonacoTextEditor(QWidget* parent) :
 
   monacoTextEditorVBoxLayout->addWidget(webEngineView);
   this->setLayout(monacoTextEditorVBoxLayout);
+
+  // setup Connection to CPPEndPoint to receive events from JS side
+  QObject::connect(CPPEndPointObject,
+                   &CPPEndPoint::signalToCPP_SaveFileContentFromJS,
+                   this,
+                   &MonacoTextEditor::handleSignalFromJS_SaveFileContent);
+
+  // setup Actions
+  saveCurrentFileAction = new QAction(this);
+  // https://stackoverflow.com/questions/1346964/use-qaction-without-adding-to-menu-or-toolbar
+  this->addAction(saveCurrentFileAction);
+  saveCurrentFileAction->setShortcutContext(Qt::ApplicationShortcut);
+  saveCurrentFileAction->setShortcut(QKeySequence::Save);
+  connect(saveCurrentFileAction,
+          &QAction::triggered,
+          this,
+          &MonacoTextEditor::handleAction_SaveFile);
 }
 
 
@@ -131,8 +154,8 @@ MonacoTextEditor::~MonacoTextEditor() {
 
 void MonacoTextEditor::openFileInCurrentTab(QString filepath) {
 
-  emit CPPEndPointObject->updateFilePath(filepath);
-
+  currentFilePath = filepath;
+  emit CPPEndPointObject->signalToJS_UpdateFilePath(currentFilePath);
 }
 
 
@@ -141,5 +164,42 @@ void MonacoTextEditor::runJavaScript(QString javascriptCode) {
   if(webEngineView->page()) {
     webEngineView->page()->runJavaScript(javascriptCode);
   }
+}
 
+
+void MonacoTextEditor::handleAction_SaveFile() {
+
+  qDebug() << "handleSaveFileAction()";
+
+  // trigger the JS side to send the file contents across to us
+  // so we can save it on the filesystem.
+  qDebug() << "trigger signal to JS to save the file";
+  emit CPPEndPointObject->signalToJS_SaveFile();
+}
+
+
+void MonacoTextEditor::handleSignalFromJS_SaveFileContent(QVariant fileContent) {
+
+  qDebug() << "saveCurrentFileContentFromJS()";
+  qDebug() << "currentFilePath:" << currentFilePath;
+  
+
+  QFile fileToWrite(currentFilePath);
+  if(!fileToWrite.open(QIODevice::WriteOnly)) {
+    qDebug() << "error in opening file to write!";
+    fileToWrite.close();
+  }
+  else {
+    QTextStream out(&fileToWrite);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 5, 3))
+    qDebug() << "codec:" << out.codec()->name();
+    // out.setCodec("UTF-8");
+#else
+    qDebug() << "codec:" << out.encoding();
+    // out.setEncoding(QStringConverter::Encoding::Utf8);
+#endif
+    out << fileContent.toString();
+    fileToWrite.close();
+    qDebug() << "write to file done.";
+  }
 }

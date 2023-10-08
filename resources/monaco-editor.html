@@ -11,6 +11,7 @@
 -->
 <!-- find file extension in JS
   https://www.w3docs.com/snippets/javascript/how-to-get-file-extensions-with-javascript.html
+  also see: https://stackoverflow.com/questions/56681345/how-to-dynamically-set-language-according-to-file-extension-in-monaco-editor/57074528#57074528
 -->
 <!-- locally use monaco-editor without node.js: https://stackoverflow.com/questions/62099902/how-to-use-monaco-editor-without-node-js -->
 <!-- tabs, single instance: https://github.com/microsoft/monaco-editor/issues/604#issuecomment-344214706 -->
@@ -37,17 +38,19 @@
 <body>
   <h2>Monaco Editor</h2>
 
-  <div id='fileselect'>
+  <!-- The HTML file <input> is no longer needed for testing, as we have route from Qt C++ to Monaco now -->
+  <!-- <div id='fileselect'>
   Select File >> <input type='file' onchange='readFileFromInputUsingFileReader(event)' style='min-width:200px;'>
   </div>
 
   <br/>
+  -->
 
   <button onclick="clicky()" style='min-width:200px;'> clicky </button>
 
   <br/>
 
-  <div id='output'></div>
+  <div id='debug'></div>
 
   <br/>
 
@@ -56,6 +59,10 @@
   <br/>
 
   <div id='language_detected'></div>
+
+  <br/>
+
+  <div id='changes_detected'></div>
 
   <br/>
 
@@ -70,69 +77,58 @@
 
 
   <script>
-    // load default content on startup.
+    // monaco editor startup: load no content on startup.
     var monacoEditor = monaco.editor.create(document.getElementById('container'), {
-      value: [
-        '#include <iostream>',
-        '',
-        'int main() {',
-        'std::cout << "hello" << std::endl;',
-        'return 0;',
-        '}'
-      ].join('\n'),
-      language: 'cpp',
+      value: '',
+      language: undefined,
       automaticLayout: true,
       theme: "vs"
     });
 
-    document.getElementById('file_selected').innerText = 'file selected: ' + 'internal-sample-code';
-    document.getElementById('language_detected').innerText = 'language detected: ' + 'cpp';
-
+    document.getElementById('file_selected').innerHTML = 'file selected: ' + '<b>' + 'none' + '</b>';
+    document.getElementById('language_detected').innerHTML = 'language detected: ' + '<b>' + 'undefined' + '</b>';
   </script>
-  
+
   <script>
-    function getModelLanguage(path) {
-      // include the dot in the extension!
-      var ext = path.substring(path.lastIndexOf('.'));
-      console.log("found extension: " + ext);
+    // this is not needed, as we can query monaco for the language, once it has detected it
+    // after loading the model.
+    // function getModelLanguage(path) {
+    //   // include the dot in the extension!
+    //   var ext = path.substring(path.lastIndexOf('.'));
+    //   console.log("found extension: " + ext);
       
-      const language = monaco
-        .languages
-        .getLanguages()
-        .find((lang) => {
-          // check the condition that will yield truthy
-          if( (lang.extensions) && (lang.extensions.indexOf(ext) != -1) ) {
-            return true;
-          }
-        });
+    //   const language = monaco
+    //     .languages
+    //     .getLanguages()
+    //     .find((lang) => {
+    //       // check the condition that will yield truthy
+    //       if( (lang.extensions) && (lang.extensions.indexOf(ext) != -1) ) {
+    //         return true;
+    //       }
+    //     });
       
-      // console.log("found language:");
-      // console.log(language);
+    //   // console.log("found language:");
+    //   // console.log(language);
       
-      return language ? language.id : 'plaintext';
-    }
+    //   return language ? language.id : 'plaintext';
+    // }
 
-    function readFileFromInputUsingFileReader(event) {
-      var _input = event.target;
-      var _filepath = _input.files[0];
-      window.cppEndPoint.log("openFileFromInput: " + _filepath.name);
-      
-      var language_id = getModelLanguage(_filepath.name)
+    // this function is no longer needed, as we are not using the HTML <input> anymore for loading a file.
+    // function readFileFromInputUsingFileReader(event) {
+    //   var _input = event.target;
+    //   var _filepath = _input.files[0];
+    //   window.cppEndPoint.log("openFileFromInput: " + _filepath.name);
 
-      var reader = new FileReader();
-      reader.onload = function() {
-        var text = reader.result;
-        
-        document.getElementById('file_selected').innerText = 'file selected: ' + _filepath.name;
-        document.getElementById('language_detected').innerText = 'language detected: ' + language_id;
-        
-        monaco.editor.getModels().forEach(model => model.dispose());
-        var model = monaco.editor.createModel(value=text, language=language_id);
-        monacoEditor.setModel(model);
-      };
+    //   var reader = new FileReader();
+    //   reader.onload = function() {
+    //     var text = reader.result;
+
+    //     setMonacoEditorModelWithFile(_filepath.name, text);
+    //   };
     
-      reader.readAsText(_filepath);
-    };
+    //   reader.readAsText(_filepath);
+    // };
+
 
     // https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file-in-the-browser
     function readFileFromPathUsingXHR(filepath) {
@@ -143,15 +139,8 @@
         if(rawFile.readyState === 4)  {
           if(rawFile.status === 200 || rawFile.status == 0) {
             var text = rawFile.responseText;
-            
-            var language_id = getModelLanguage(filepath)
-            
-            document.getElementById('file_selected').innerText = 'file selected: ' + filepath;
-            document.getElementById('language_detected').innerText = 'language detected: ' + language_id;
-            
-            monaco.editor.getModels().forEach(model => model.dispose());
-            var model = monaco.editor.createModel(value=text, language=language_id);
-            monacoEditor.setModel(model);
+
+            setMonacoEditorModelWithFile(filepath, text);
           }
         }
       }
@@ -165,16 +154,38 @@
       fetch(filepath)
       .then((res) => res.text())
       .then((text) => {
-        var language_id = getModelLanguage(filepath);
-        
-        document.getElementById('file_selected').innerText = 'file selected: ' + filepath;
-        document.getElementById('language_detected').innerText = 'language detected: ' + language_id;
-        
-        monaco.editor.getModels().forEach(model => model.dispose());
-        var model = monaco.editor.createModel(value=text, language=language_id);
-        monacoEditor.setModel(model);
+
+        setMonacoEditorModelWithFile(filepath, text);
       })
       .catch((e) => console.error(e));
+    }
+
+
+    function setMonacoEditorModelWithFile(filepath, filecontent) {
+
+      document.getElementById('file_selected').innerHTML = 'file selected: ' + '<b>' + filepath + '</b>';
+
+      // var languageID = getModelLanguage(filepath);
+      // document.getElementById('language_detected').innerText = 'language detected: ' + languageID;
+
+      monaco.editor.getModels().forEach(model => model.dispose());
+      var model = monaco.editor.createModel(value=filecontent, language=undefined, monaco.Uri.file(filepath));
+      monacoEditor.setModel(model);
+      var languageID = monacoEditor.getModel().getLanguageId();
+      document.getElementById('language_detected').innerHTML = 'language detected: ' + '<b>' + languageID + '</b>';
+      window.alternativeVersionID = monacoEditor.getModel().getAlternativeVersionId();
+      document.getElementById('debug').innerHTML = '';
+
+      monacoEditor.getModel().onDidChangeContent((event) => {
+        var alternativeVersionID_now = monacoEditor.getModel().getAlternativeVersionId();
+        document.getElementById('debug').innerHTML = 'id now: ' + alternativeVersionID_now + ', id: ' + window.alternativeVersionID ;
+        if(alternativeVersionID_now == window.alternativeVersionID) {
+          document.getElementById('changes_detected').innerHTML = '';
+        }
+        else {
+          document.getElementById('changes_detected').innerHTML = '<b>unsaved changes detected: ' + alternativeVersionID_now + '</b>';
+        }
+      });
     }
   </script>
 
@@ -196,8 +207,9 @@
       window.cppEndPoint.log("we got qtVersion: " + qtVersion[0] + "." + qtVersion[1] + "." + qtVersion[2]);
 
       // connect the Qt side updateFilePath(QString filepath) signal to anon function, and handle it:
-      window.cppEndPoint.updateFilePath.connect(function(path) {
-        // alert(path);
+      window.cppEndPoint.signalToJS_UpdateFilePath.connect(function(path) {
+
+        window.cppEndPoint.log("we got the signal: signalToJS_UpdateFilePath");
 
         // FUTURE: use semver JS library (https://stackoverflow.com/a/30256597/3379867)
         if(window.cppEndPoint.qtVersion[0] >= 6 &&
@@ -211,6 +223,19 @@
           readFileFromPathUsingXHR(path);
         }
       })
+
+      window.cppEndPoint.signalToJS_SaveFile.connect(function() {
+        
+        window.cppEndPoint.log("we got the signal: signalToJS_SaveFile");
+
+        // send the 'data' for the file to be saved - cpp should save the file with updated content.
+        window.cppEndPoint.saveFileContent(monacoEditor.getModel().getValue());
+        
+        // at this point, we assume it got saved, so there are no more 'unsaved' changes: TODO refine this process.
+        window.alternativeVersionID = monacoEditor.getModel().getAlternativeVersionId();
+        document.getElementById('changes_detected').innerHTML = '';
+        document.getElementById('debug').innerHTML = '';
+      });
     });
   </script>
 
