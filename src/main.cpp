@@ -107,17 +107,23 @@ int main(int argc, char *argv[])
 
 
 #if SQUINTYMONGREL_USE_SPLASH_SCREEN
-    QPixmap pixmap = QIcon(":/images/logo.svg").pixmap(QSize(88*7,95*7)); // use original image w,h or multiple.
+    QPixmap pixmap = QIcon(":/images/logo.svg").pixmap(QSize(800,800));
     QSplashScreen splash(pixmap, Qt::SplashScreen | Qt::WindowStaysOnTopHint);
     splash.show();
-    splash.showMessage(QObject::tr("Thinking..."), Qt::AlignBottom | Qt::AlignRight, Qt::black);
-    QTimer::singleShot(3000, &splash, &QWidget::close); // keep displayed for 5 seconds
+    splash.windowHandle()->setScreen(QGuiApplication::screenAt(QCursor::pos()));
+    splash.showMessage(QObject::tr("Thinking..."), Qt::AlignBottom | Qt::AlignRight, Qt::gray);
+    QTimer::singleShot(2600, &splash, &QWidget::close); // keep displayed for ~3 seconds
 #endif // #if SQUINTYMONGREL_USE_SPLASH_SCREEN
 
     Window window;
-    window.show();
+
 #if SQUINTYMONGREL_USE_SPLASH_SCREEN
-    QTimer::singleShot(3000, &window, &QWidget::raise); // raise it to front after splash screen is done.
+    QTimer::singleShot(2650, &window, &QWidget::show); // show the main window after splash
+    QTimer::singleShot(2650, &window, &Window::setPositionAndSize); // adjust size and position
+#else
+    window.show();
+    window.setPositionAndSize();
 #endif // #if SQUINTYMONGREL_USE_SPLASH_SCREEN
+
     return app.exec();
 }

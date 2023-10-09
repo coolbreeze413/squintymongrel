@@ -75,7 +75,8 @@ Window::Window()
     setWindowIcon(icon);
 
     // finally adjust ourself to position centered and an appropriate size
-    setPositionAndSize();
+    // trigger this from outside.
+    // setPositionAndSize();
 }
 
 
