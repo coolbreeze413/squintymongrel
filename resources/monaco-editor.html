@@ -24,6 +24,7 @@
 <!-- Qt + WebEngine + HTML + JS
   https://stackoverflow.com/questions/64164738/how-to-embed-basic-html-page-using-qt
   https://stackoverflow.com/questions/64194768/how-to-get-and-set-the-value-of-monaco-editor-in-python-qt
+  https://stackoverflow.com/questions/61764733/capture-a-javascript-event-in-qtwebengine
 -->
 
 <html>
@@ -46,7 +47,7 @@
   <br/>
   -->
 
-  <button onclick="clicky()" style='min-width:200px;'> clicky </button>
+  <button id="clickyButton" onclick="clicky()" style='min-width:200px;'> clicky </button>
 
   <br/>
 
@@ -235,6 +236,12 @@
         window.alternativeVersionID = monacoEditor.getModel().getAlternativeVersionId();
         document.getElementById('changes_detected').innerHTML = '';
         document.getElementById('debug').innerHTML = '';
+      });
+
+      // add a DOM event listener on C++ side:
+      document.getElementById('clickyButton').addEventListener('mouseover', function(event) {
+        // alert(event.target.id);
+        window.cppEndPoint.hoveredOnElement(event.target.id);
       });
     });
   </script>

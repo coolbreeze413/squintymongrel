@@ -20,7 +20,10 @@ public:
     Q_INVOKABLE void log(QVariant s);
     Q_INVOKABLE QVariant getAppVersion();
     Q_INVOKABLE void saveFileContent(QVariant fileContent);
-    
+
+    // callback of C++ which JS can use to call on a hover event on some element
+    Q_INVOKABLE void hoveredOnElement(QVariant elementName);
+
     // expose 'intValue' as a property, which will invoke getIntValue() to get the value
     Q_PROPERTY(int intValue READ getIntValue NOTIFY signalToJS_IntValueChanged);
     Q_INVOKABLE int getIntValue();

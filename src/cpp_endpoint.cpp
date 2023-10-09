@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QVariant>
+#include <QTime>
 
 
 // https://stackoverflow.com/questions/240353/convert-a-preprocessor-token-to-a-string
@@ -46,6 +47,11 @@ Q_INVOKABLE void CPPEndPoint::saveFileContent(QVariant fileContent)
   qDebug() << "saveFileContent() from JS, send to CPP";
   
   emit signalToCPP_SaveFileContentFromJS(fileContent);
+}
+
+
+Q_INVOKABLE void CPPEndPoint::hoveredOnElement(QVariant elementName) {
+  qDebug() << "hovered on" << elementName.toString() << QTime::currentTime();
 }
 
 
