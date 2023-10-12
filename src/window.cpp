@@ -61,9 +61,10 @@ Window::Window()
     QVBoxLayout *centraWidgetLayout = new QVBoxLayout;
     QSplitter* splitter = new QSplitter();
     splitter->addWidget(fileExplorerView);
-    splitter->setStretchFactor(0, 1);
+    fileExplorerView->setMinimumWidth(500);
+    splitter->setStretchFactor(0, 2);
     splitter->addWidget(textEditor);
-    splitter->setStretchFactor(1, 10);
+    splitter->setStretchFactor(1, 8);
     centraWidgetLayout->addWidget(splitter);
 
     QWidget *widget = new QWidget();

@@ -122,6 +122,18 @@ MonacoTextEditor::MonacoTextEditor(QWidget* parent) :
 
       // emit CPPEndPointObject->updateFilePath(QCoreApplication::applicationDirPath() +
       //                                  "/../share/squintymongrel/monaco-editor.html");
+
+      // set the minimum size of the webengineview according to content:
+      this->webEngineView->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+      this->webEngineView->setMinimumSize(QSize(650,850));
+    }
+  );
+
+  QObject::connect(
+    webEngineView->page(),
+    &QWebEnginePage::contentsSizeChanged,
+    [this](QSizeF sizeF) {
+      // qDebug() << "contentsSizeChanged()" << sizeF;
     }
   );
 
