@@ -67,23 +67,24 @@ if (Qt_FOUND)
     endif()
 endif()
 
+set(MONACO_EDITOR_VERSION 0.45.0)
 
 # download the monaco editor tgz, extract it, and rename the dir from 'package' to 'monaco-editor'
-if(NOT EXISTS ${CMAKE_SOURCE_DIR}/resources/monaco-editor-0.30.0.tgz)
-message("Downloading monaco-editor tgz package...")
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/resources/monaco-editor-${MONACO_EDITOR_VERSION}.tgz)
+message("Downloading monaco-editor tgz package: " ${MONACO_EDITOR_VERSION} " ...")
 file(DOWNLOAD
-    https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.30.0.tgz
-    ${CMAKE_SOURCE_DIR}/resources/monaco-editor-0.30.0.tgz
+    https://registry.npmjs.org/monaco-editor/-/monaco-editor-${MONACO_EDITOR_VERSION}.tgz
+    ${CMAKE_SOURCE_DIR}/resources/monaco-editor-${MONACO_EDITOR_VERSION}.tgz
 )
 endif()
 
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/resources/monaco-editor/)
-message("Extracting monaco-editor tgz package...")
+message("Extracting monaco-editor tgz package: " ${MONACO_EDITOR_VERSION} " ...")
 execute_process(
     COMMAND_ECHO
         STDOUT
     COMMAND 
-        tar -xf ${CMAKE_SOURCE_DIR}/resources/monaco-editor-0.30.0.tgz
+        tar -xf ${CMAKE_SOURCE_DIR}/resources/monaco-editor-${MONACO_EDITOR_VERSION}.tgz
     RESULT_VARIABLE result
     WORKING_DIRECTORY
         ${CMAKE_SOURCE_DIR}/resources
